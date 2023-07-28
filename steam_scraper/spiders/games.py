@@ -10,7 +10,7 @@ class GamesSpider(scrapy.Spider):
     allowed_domains = ["store.steampowered.com"]
     start_urls = ["https://store.steampowered.com/app/"]
     df = pd.read_csv("all_games.csv")
-    ids = df["appid"].to_list()
+    ids = df["appid"].to_list()[:10]
 
     def start_requests(self):
         for appid in tqdm(self.ids):
