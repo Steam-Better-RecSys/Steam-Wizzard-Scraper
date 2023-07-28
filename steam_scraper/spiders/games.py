@@ -28,6 +28,11 @@ class GamesSpider(scrapy.Spider):
     def parse_games(self, response, **kwargs):
         appid = response.xpath('//input[@id="review_appid"]/@value').extract()
 
+        if len(appid) == 0:
+            appid = response.xpath(
+                '//div[@id="responsive_page_template_content"]/div[@class="game_page_background game"]/@data-miniprofile-appid'
+            ).extract()
+
         title = response.xpath('//div[@id="appHubAppName"]/text()').extract()
 
         if len(title) == 0:
@@ -56,7 +61,7 @@ class GamesSpider(scrapy.Spider):
             '//div[@id="userReviews"]/div[div[@class="subtitle column all"]]/div/span[@class="nonresponsive_hidden responsive_reviewdesc"]/text()'
         ).extract()
 
-        if len(reviews_fancy) == 0:
+        if len(reviews_fancy) == 0 or '%' not in reviews_fancy[0]:
             reviews_fancy = "0%"
         else:
             reviews_fancy = re.findall(r"\d+%", reviews_fancy[0])[0]
